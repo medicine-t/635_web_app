@@ -93,6 +93,8 @@ async def get_user_info(user_id: UUID4) -> User:
 @app.post("/v1/rooms/{room_id}/join")
 async def join_room(room_id: UUID4,user_id: UUID4):
     room = await get_room_info(room_id)
+    if type(room) == Response:
+        return room
     if len(room.members) >= 6:
         return Response(status_code=403)
     user = await get_user_info(user_id)
@@ -100,7 +102,7 @@ async def join_room(room_id: UUID4,user_id: UUID4):
     return {"message": "success"}
 
 @app.post("/v1/rooms/{room_id}/start")
-async def start_room(room_id: UUID4) -> datetime.time:
+async def start_room(room_id: UUID4) -> datetime.datetime:
     room = await get_room_info(room_id)
     if type(room) == Response:
         return JSONResponse(status_code=404,content={"message":"room not found"})
@@ -108,7 +110,7 @@ async def start_room(room_id: UUID4) -> datetime.time:
         return JSONResponse(status_code=403,content={"message":"not enough members now"})
     for user in room.members:
         await create_sheet(room_id,user.user_id)
-    room.start_time = datetime.datetime.time() + datetime.timedelta(seconds=5)
+    room.start_time = datetime.datetime.now() + datetime.timedelta(seconds=5)
     return room.start_time
 
 #@app.post("/v1/sheet/create/{room_id}/{user_id}")

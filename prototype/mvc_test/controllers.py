@@ -29,7 +29,26 @@ class Controller:
         self.start_frame = StartFrame(window=window)
         self.registration_frame = RegistrationFrame(window=window)
         self.standby_frame = StandbyFrame(window=window)
-        self.model = TestModel()
+        self.model = Model()
 
-    def to_start(self):
+    def _to_start(self):
+        room_list = self.model.getRoomList()
+        self.start_frame.setup(room_list)
+        self.fr.switchTo(self.start_frame)
+        self.start_frame.CreatRoom.bind("<Button-1>", self.creat_room)
+        for b in self.start_frame.RoomList:
+            b.bind("<Button-1>", self.join_room)
+
+    def join_room(self,event: tk.Event):
+        button_text = event.widget["text"]
+        room_name = button_text.split(".")[1]
+        room_name = self.model.getRoom()
+        pass
+
+    def create_room(self):
+        room_name = self.start_frame.ToNameRoom.get()
+        room_id = self.model.createRoom(room_name=room_name, user_id=user_id)
+        self._to_registration()
+
+    def _to_registration(self, room_id: str):
         pass

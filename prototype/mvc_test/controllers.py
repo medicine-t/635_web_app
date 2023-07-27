@@ -22,3 +22,14 @@ class TestController:
 
     def waiting_method(self):
         self.model.waitng_print()
+
+class Controller:
+    def __init__(self, window: tk.Tk) -> None:
+        self.fr = FrameSwitcher(window)
+        self.start_frame = StartFrame(window=window)
+        self.registration_frame = RegistrationFrame(window=window)
+        self.standby_frame = StandbyFrame(window=window)
+        self.model = TestModel()
+
+    def to_start(self):
+        pass

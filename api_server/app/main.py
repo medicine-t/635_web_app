@@ -45,7 +45,7 @@ async def get_room_list() -> list[Room]:
 @app.post("/v1/room/update/")
 async def update_room(room_id:UUID4,user_id:UUID4):
     room:Room = await get_room_info(room_id)
-    if user_id != room.host_user or room.phase_num >= 6:
+    if user_id != room.host_user :#or room.phase_num >= 6:
         return Response(status_code=403)
     for s in sheets:
         for i in range(3):

@@ -1,7 +1,10 @@
 from fastapi import FastAPI,Response
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel,UUID4
+from typing import Optional
 import datetime 
 import uuid
+import asyncio
 app = FastAPI()
 
 class User(BaseModel):
@@ -12,7 +15,7 @@ class Room(BaseModel):
     room_id: UUID4
     room_name: str
     members: list[User]
-    host_user : str
+    host_user : UUID4
     start_time : datetime.time = None
     is_start : bool = False
 
@@ -23,11 +26,12 @@ class Idea(BaseModel):
 class Sheet(BaseModel):
     id: UUID4
     room_id: UUID4
-    user_id: UUID4
-    ideas : list[Idea]
+    user_id: UUID4 # writing user id
+    ideas : list[Idea] = [[Idea()] * 3 for i in range(6)]
 
 rooms:list[Room] = []
 users:list[User] = []
+sheets: list[Sheet] = []
 
 @app.get("/")
 def index():
@@ -37,14 +41,18 @@ def index():
 async def get_room_list() -> list[Room]:
     return rooms
 
-class CreateRoom(BaseModel):
-    room_name: str
-    user_id: UUID4
+@app.post("/v1/room/update/{room_id}")
+async def update_room(room_id:UUID4):
+    room:Room = await get_room_info(room_id)
+    for s in sheets:
+        if s.room_id == room_id:
+            s.user_id = (room.members.index(s.user_id) + 1) % len(room.members)
+            break
 
-@app.post("/v1/rooms/create")
-async def create_room(room_info: CreateRoom):
+@app.post("/v1/rooms/create/{room_name}/{user_id}")
+async def create_room(room_name:str, user_id:UUID4):
     rooms.append(
-        Room(room_id=uuid.uuid4(),room_name=room_info.room_name,members=[],host_user=room_info.user_id)
+        Room(room_id=uuid.uuid4(),room_name=room_name,members=[],host_user=user_id)
         )
     return {"message": "success"}
     
@@ -65,6 +73,10 @@ async def create_user(user_name: str) -> list[User]:
     users.append(User(user_name=user_name,user_id=uuid.uuid4()))
     return users
 
+@app.get("/v1/users/list")
+async def get_user_list():
+    return users
+
 @app.get("/v1/users/{user_id}")
 async def get_user_info(user_id: UUID4) -> User:
     ret: User = None
@@ -77,13 +89,12 @@ async def get_user_info(user_id: UUID4) -> User:
     else :
         return ret
     
-@app.get("/v1/users/list")
-async def get_user_list() -> list[User]:
-    return users
 
 @app.post("/v1/rooms/{room_id}/join")
 async def join_room(room_id: UUID4,user_id: UUID4):
     room = await get_room_info(room_id)
+    if type(room) == Response:
+        return room
     if len(room.members) >= 6:
         return Response(status_code=403)
     user = await get_user_info(user_id)
@@ -91,9 +102,28 @@ async def join_room(room_id: UUID4,user_id: UUID4):
     return {"message": "success"}
 
 @app.post("/v1/rooms/{room_id}/start")
-async def start_room(room_id: UUID4) -> datetime.time:
+async def start_room(room_id: UUID4) -> datetime.datetime:
     room = await get_room_info(room_id)
+    if type(room) == Response:
+        return JSONResponse(status_code=404,content={"message":"room not found"})
     if len(room.members) != 6:
-        return Response(status_code=400)
-    room.start_time = datetime.time() + datetime.time(second=5)
+        return JSONResponse(status_code=403,content={"message":"not enough members now"})
+    for user in room.members:
+        await create_sheet(room_id,user.user_id)
+    room.start_time = datetime.datetime.now() + datetime.timedelta(seconds=5)
     return room.start_time
+
+#@app.post("/v1/sheet/create/{room_id}/{user_id}")
+async def create_sheet(room_id: UUID4,user_id: UUID4):
+    sheet = Sheet(id=uuid.uuid4(),room_id=room_id,user_id=user_id)
+    sheets.append(sheet)
+    return
+
+@app.post("/v1/sheet/update/")
+async def set_sheet(sheet:Sheet):
+    for s in sheets:
+        if s.id == sheet.id:
+            s = sheet
+            break
+    return
+

@@ -1,11 +1,11 @@
 version: '2'
 services:
   api:
-    build: ./api
+    build: ./api_server
     volumes:
       - ./api_server:/usr/src/api
     working_dir: /usr/src/api
     ports:
       - 80:8000
     tty: true
-    command: uvicorn app.main:app --reload --host=0.0.0.0 --port 8000
+    command: uvicorn app.main:app --host=0.0.0.0 --port 8000

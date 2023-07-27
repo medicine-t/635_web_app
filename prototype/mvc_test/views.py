@@ -41,8 +41,7 @@ class RegistrationFrame(tk.Frame):
         self.Registration = None
         self.RoomName = None
 
-    def setup(self,room: dict):
-        room_name = room["room_name"]
+    def setup(self,room_name: str):
         self.RoomName =tk.Label(self,room_name)
         self.RoomName.pack()
 

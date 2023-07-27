@@ -30,25 +30,42 @@ class Controller:
         self.registration_frame = RegistrationFrame(window=window)
         self.standby_frame = StandbyFrame(window=window)
         self.model = Model()
+        self.willCreate = False
 
     def _to_start(self):
         room_list = self.model.getRoomList()
         self.start_frame.setup(room_list)
         self.fr.switchTo(self.start_frame)
-        self.start_frame.CreatRoom.bind("<Button-1>", self.creat_room)
+        self.start_frame.CreatRoom.bind("<Button-1>", self.create_room)
         for b in self.start_frame.RoomList:
             b.bind("<Button-1>", self.join_room)
 
     def join_room(self,event: tk.Event):
         button_text = event.widget["text"]
-        room_name = button_text.split(".")[1]
-        room_name = self.model.getRoom()
-        pass
+        room_name = button_text.split(".")[0]
+        room_id = button_text.split(".")[1]
+        self.willCreate = False
+        self._to_registration(room_name, room_id)
 
-    def create_room(self):
+    def create_room(self, event: tk.Event):
         room_name = self.start_frame.ToNameRoom.get()
-        room_id = self.model.createRoom(room_name=room_name, user_id=user_id)
-        self._to_registration()
+        room_id = ""
+        self.willCreate = True
+        self._to_registration(room_name, room_id)
 
-    def _to_registration(self, room_id: str):
-        pass
+    def _to_registration(self, room_name: str, room_id: int):
+        self.registration_frame.setup(room_name)
+        self.fr.switchTo(self.registration_frame)
+        self.registration_frame.Registration.bind("<Button-1>", self.registration)
+
+    def registration(self, event: tk.Event):
+        user_name = self.registration_frame.UserName.get()
+        self.model.createUser(user_name)
+        room_name = self.registration_frame.RoomName.cget("text")
+
+        if self.willCreate:
+            self.model.createRoom(room_name,self.model.user_id)
+
+        self.model.registration(self.model.room_id,self.model.user_id)
+
+        ## self._to~~

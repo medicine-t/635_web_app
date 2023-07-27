@@ -22,7 +22,7 @@ class Model:
         response = requests.post(f"{self.url}/v1/rooms/create/{room_name}/{user_id}")
         if response.status_code != 200:
             return False
-        return True
+        return response.json()["room_id"]
     
 
     def updateRoom(self,room_id,user_id) :

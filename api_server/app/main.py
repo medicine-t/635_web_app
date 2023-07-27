@@ -45,7 +45,7 @@ async def get_room_list() -> list[Room]:
 @app.post("/v1/room/update/")
 async def update_room(room_id:UUID4,user_id:UUID4):
     room:Room = await get_room_info(room_id)
-    if user_id != room.host_user or room.phase_num >= 6:
+    if user_id != room.host_user :#or room.phase_num >= 6:
         return Response(status_code=403)
     for s in sheets:
         for i in range(3):
@@ -60,10 +60,10 @@ async def update_room(room_id:UUID4,user_id:UUID4):
 
 @app.post("/v1/rooms/create/{room_name}/{user_id}")
 async def create_room(room_name:str, user_id:UUID4):
-    rooms.append(
-        Room(room_id=uuid.uuid4(),room_name=room_name,members=[],host_user=user_id)
-        )
-    return {"message": "success"}
+    new_room = Room(room_id=uuid.uuid4(),room_name=room_name,members=[],host_user=user_id)
+    rooms.append(new_room)
+
+    return {"room_id" : new_room.room_id}
     
 @app.get("/v1/roooms/{room_id}")
 async def get_room_info(room_id: UUID4) -> Room:

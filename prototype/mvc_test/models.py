@@ -1,23 +1,5 @@
 import requests
 import datetime 
-from pydantic import BaseModel,UUID4
-
-class TestModel:
-    def test(self, text):
-        print(text)
-
-    def waitng_print(self):
-        print("I'm wainting!")
-
-class Idea(BaseModel):
-    idea : str = ""
-    num_eval : int = 0
-
-class Sheet(BaseModel):
-    id: UUID4
-    room_id: UUID4
-    user_id: UUID4 # writing user id
-    ideas : list[list[Idea]] = [[Idea()] * 3 for _ in range(6)]
         
 class Model:
     def __init__(self) -> None:
@@ -79,7 +61,7 @@ class Model:
             return False
         return response.json()
     
-    def setSheet(self,sheet: Sheet):
+    def setSheet(self,sheet):
         response = requests.post(f"{self.url}/v1/sheet/update",json=sheet.dict())
         if response.status_code != 200:
             return False

@@ -78,9 +78,10 @@ async def get_room_info(room_id: UUID4) -> Room:
         return ret
 
 @app.post("/v1/users/create")
-async def create_user(user_name: str) -> list[User]:
-    users.append(User(user_name=user_name,user_id=uuid.uuid4()))
-    return users
+async def create_user(user_name: str):
+    new_user = User(user_name=user_name,user_id=uuid.uuid4())
+    users.append(new_user)
+    return new_user
 
 @app.get("/v1/users/list")
 async def get_user_list():

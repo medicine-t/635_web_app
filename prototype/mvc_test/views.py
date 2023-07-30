@@ -25,8 +25,8 @@ class StartFrame(tk.Frame):
         for room in roomlist:
             name = room["room_name"]
             room_id = room["room_id"]
-            self.RoomList.append(tk.Button(self, f"{name}.{room_id}", width=20))
-            self.RoomList.pack()
+            self.RoomList.append(tk.Button(self, text=f"{name}.{room_id}", width=20))
+            self.RoomList[-1].pack()
 
         self.ToNameRoom = tk.Entry(self, fg='gray', bg="white")
         self.ToNameRoom.pack()
@@ -42,7 +42,7 @@ class RegistrationFrame(tk.Frame):
         self.RoomName = None
 
     def setup(self,room_name: str):
-        self.RoomName =tk.Label(self,room_name)
+        self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
         self.UserName = tk.Entry(self, fg='gray', bg="white")
@@ -60,11 +60,11 @@ class StandbyFrame(tk.Frame):
 
     def setup(self,room: dict):
         room_name = room["name"]
-        self.RoomName =tk.Label(self,room_name)
+        self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
         numberofmembers = len(room["members"])
-        self.NumberOfMenbers = tk.Label(self, numberofmembers+"人")
+        self.NumberOfMenbers = tk.Label(self, text=numberofmembers+"人")
         self.NumberOfMenbers.pack()
 
         self.Registration = tk.Button(self, text="開始")

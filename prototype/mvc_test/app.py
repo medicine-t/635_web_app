@@ -1,9 +1,9 @@
-from controllers import TestController
+from controllers import Controller
 import tkinter as tk
 
 window = tk.Tk()
 window.geometry("500x500")
-c = TestController(window=window)
-c.setup()
+c = Controller(window=window)
+c._to_start()
 
 window.mainloop()

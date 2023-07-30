@@ -1,9 +1,9 @@
 import requests
-import datetime 
+import datetime
         
 class Model:
     def __init__(self) -> None:
-        self.url = "" # プログラマが設定
+        self.url = "http://10.10.0.53" # プログラマが設定
         self.room_id = "" #Controllerの_to_registrationでroom_idを設定する。
         self.user_id = "" #部屋参加登録時に更新
 
@@ -66,3 +66,10 @@ class Model:
         if response.status_code != 200:
             return False
         return True
+    
+class TestModel:
+    def test(self, text):
+        print(text)
+
+    def waitng_print(self):
+        print("I'm wainting!")

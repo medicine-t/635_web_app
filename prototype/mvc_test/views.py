@@ -25,7 +25,7 @@ class StartFrame(tk.Frame):
         for room in roomlist:
             name = room["room_name"]
             room_id = room["room_id"]
-            self.RoomList.append(tk.Button(self, text=f"{name}.{room_id}", width=20), anchor="w")
+            self.RoomList.append(tk.Button(self, text=f"{name}.{room_id}", width=20, anchor="w"))
             self.RoomList[-1].pack()
 
         self.ToNameRoom = tk.Entry(self, fg='gray', bg="white")

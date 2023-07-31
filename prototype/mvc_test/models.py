@@ -18,6 +18,7 @@ class Model:
     
     def getRoom(self):
         response = requests.get(f"{self.url}/v1/rooms/{self.room_id}")
+        print(response)
         room = response.json()
         return room
     
@@ -39,7 +40,7 @@ class Model:
         response = requests.post(f"{self.url}/v1/rooms/{room_id}/start",params={"user_id":user_id})
         if response.status_code != 200:
             return False
-        return response.json()["start_time"]
+        return True
 
     ### User ###
     def createUser(self, user_name: str):

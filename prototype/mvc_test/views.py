@@ -60,12 +60,12 @@ class StandbyFrame(tk.Frame):
         self.SessionStart = None
 
     def setup(self, room: dict):
-        room_name = room["name"]
+        room_name = room["room_name"]
         self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
         number_of_members = len(room["members"])
-        self.NumberOfMenbers = tk.Label(self, text=number_of_members+"人")
+        self.NumberOfMenbers = tk.Label(self, text= str(number_of_members)+"人")
         self.NumberOfMenbers.pack()
 
         self.Registration = tk.Button(self, text="開始")
@@ -78,7 +78,7 @@ class CountdownFrame(tk.Frame):
         self.startRemainTime = None
 
     def setup(self, room: dict):
-        room_name = room["name"]
+        room_name = room["room_name"]
         self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
@@ -94,7 +94,7 @@ class WritingFrame(tk.Frame):
         self.table.pack()
 
     def setup(self, room: dict, ideas: list, row_wiritng: int): #row_writing 書き込みを行う行の行番号
-        room_name = room["name"]
+        room_name = room["room_name"]
         self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
@@ -120,7 +120,7 @@ class ReviewFrame(tk.Frame):
         self.table = tk.Frame(self)
         self.table.pack()
         
-        room_name = room["name"]
+        room_name = room["room_name"]
         self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
 
@@ -138,7 +138,7 @@ class RankingFrame(tk.Frame):
         self.rankingBoard = None
 
     def setup(self, room: dict, ranking: list):
-        room_name = room["name"]
+        room_name = room["room_name"]
         self.RoomName =tk.Label(self, text=room_name)
         self.RoomName.pack()
         column = ("place", "idea", "score", "author")

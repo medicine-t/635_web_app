@@ -2,8 +2,9 @@ from models import *
 from views import *
 from frame_switcher import FrameSwitcher
 import tkinter as tk
+import datetime
 
-class Idea(BaseModel):
+class Idea():
     idea : str = ""
     num_eval : int = 0
 
@@ -33,8 +34,10 @@ class Controller:
         self.start_frame = StartFrame(window=window)
         self.registration_frame = RegistrationFrame(window=window)
         self.standby_frame = StandbyFrame(window=window)
+        self.countdown_frame = CountdownFrame(window=window)
         self.writing_frame = WritingFrame(window=window)
         self.review_frame = ReviewFrame(window=window)
+        self.ranking_frame = RankingFrame(window=window)
         self.model = Model()
         self.willCreate = False
 
@@ -66,29 +69,42 @@ class Controller:
     def registration(self, event: tk.Event):
         user_name = self.registration_frame.UserName.cget("text")
         self.model.createUser(user_name)
-
         if self.willCreate:
             self.model.createRoom()
 
         self.model.registration()
-
         self._to_standby()
 
     def _to_standby(self):
         room = self.model.getRoom()
         self.standby_frame.setup(room)
+        self.fr.switchTo(self.standby_frame)
         self.standby_update()
     
     def standby_update(self):
         room = self.model.getRoom()
-        if room["is_start"] == True:
-            print("room is start")
-        self.standby_frame.after(1000, self.standby_update)
+        if room["is_start"]:
+            self._to_countdown()
+        else:
+            self.standby_frame.after(1000, self.standby_update)
+
+    def start_room(self, event: tk.Event):
+        res = self.model.startRoom()
+        if res:
+            self._to_countdown()
+
+    def _to_countdown(self):
+        room = self.model.getRoom()
+        start_time_diff = room["start_time"] - datetime.datetime.now()
+        self.countdown_frame.setup(room)
+        self.fr.switchTo(self.countdown_frame)
+        self.countdown_frame.after(start_time_diff, self._to_writing)
 
     def _to_writing(self):
         room = self.model.getRoom()
         sheet = self.model.getSheet()
-        self.writing_frame.setup(room, sheet["ideas"], self.model.writing_count)
+        self.writing_frame.setup(room, sheet["ideas"], room["phase_num"])
+        self.fr.switchTo(self.writing_frame)
     
     def writing_update(self):
         sheet = self.model.getSheet()

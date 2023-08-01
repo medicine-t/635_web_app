@@ -29,6 +29,7 @@ class Sheet(BaseModel):
     room_id: UUID4
     user_id: UUID4 # writing user id
     ideas : list[list[Idea]] = [[Idea()] * 3 for _ in range(6)]
+    isUpdate: bool = False
 
 rooms:list[Room] = []
 users:list[User] = []
@@ -47,15 +48,20 @@ async def update_room(room_id:UUID4,user_id:UUID4):
     room:Room = await get_room_info(room_id)
     if user_id != room.host_user :#or room.phase_num >= 6:
         return Response(status_code=403)
-    for s in sheets:
-        for i in range(3):
-            if s.ideas[room.phase_num][i].idea == "":
-                return Response(status_code=403)
-             
+    
     for s in sheets:
         if s.room_id == room_id:
-            s.user_id = (room.members.index(s.user_id) + 1) % len(room.members)
+            if not s.isUpdate:
+                return Response(status_code=403)
+    
+    for i, s in enumerate(sheets):
+        if s.room_id == room_id:
+            sheet_user = await get_user_info(s.user_id)
+            member_index = (room.members.index(sheet_user) + 1) % len(room.members)
+            sheets[i].user_id = room.members[member_index].user_id
+            sheets[i].isUpdate = False
     room.phase_num += 1
+
     return {"message": "success"}
 
 @app.post("/v1/rooms/create/{room_name}/{user_id}")
@@ -135,9 +141,9 @@ async def create_sheet(room_id: UUID4,user_id: UUID4):
 
 @app.post("/v1/sheet/update/")
 async def set_sheet(sheet:Sheet):
-    for s in sheets:
+    for i, s in enumerate(sheets):
         if s.id == sheet.id:
-            s = sheet
+            sheets[i] = sheet
             break
     return
 

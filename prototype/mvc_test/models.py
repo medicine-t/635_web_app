@@ -77,16 +77,19 @@ class Model:
 
         return sheet
     
-    def setSheet(self, idea_texts):
+    def setSheet(self, sheet):
+        sheet["isUpdate"] = True
+        response = requests.post(f"{self.url}/v1/sheet/update/",json=sheet)
+        if response.status_code != 200:
+            return False
+        return True
+    
+    def edit_sheet(self, idea_texts):
+        sheet = self.getSheet()
         ideas = []
         for text in idea_texts:
             idea = {"idea": text, "num_eval": 0}
             ideas.append(idea)
 
-        sheet = self.getSheet()
         sheet["ideas"][self.phase_num] = ideas
-
-        response = requests.post(f"{self.url}/v1/sheet/update/",json=sheet)
-        if response.status_code != 200:
-            return False
-        return True
+        return sheet

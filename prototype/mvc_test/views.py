@@ -190,4 +190,4 @@ class RankingFrame(tk.Frame):
             
         self.rankingBoard.pack()
         self.exitButton = tk.Button(self, text="終了", relief=tk.RIDGE)
-        self.exitButton.pack()
+        #self.exitButton.pack()

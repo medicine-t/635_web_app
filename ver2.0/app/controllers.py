@@ -97,7 +97,7 @@ class Controller:
             if idea == "": 
                 idea = "アイデア未記入"
             ideas.append(idea)
-        sheet = self.model.edit_sheet(ideas)
+        sheet = self.model.editSheet(ideas)
         self.model.setSheet(sheet)
         self.writing_update()
 
@@ -163,13 +163,7 @@ class Controller:
             for ideas_row in sheet["ideas"]:
                 ideas.extend(ideas_row)
         
-        n = len(ideas)
-        for i in range(n):
-            maxj = i
-            for j in range(i,n):
-                if ideas[j]["num_eval"] > ideas[i]["num_eval"]:
-                    maxj = j
-                ideas[i], ideas[maxj] = ideas[maxj], ideas[i]
+        ideas = sorted(ideas, key=lambda x: x['num_eval'], reverse=True)
 
         return ideas
 

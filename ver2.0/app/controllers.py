@@ -25,12 +25,12 @@ class Controller:
         self.fr.switchTo(self.start_frame)
         self.start_frame.CreateRoom.bind("<Button-1>", self.create_room)
         for b in self.start_frame.RoomList:
-            b.bind("<Button-1>", self.join_room)
+            b.bind("<Button-1>", self.select_room)
 
-    def join_room(self,event: tk.Event):
+    def select_room(self,event: tk.Event):
         button_text = event.widget["text"]
-        self.model.room_name = button_text.split(".")[0]
-        self.model.room_id = button_text.split(".")[1]
+        self.model.room_name = button_text.split("(")[0].replace(")", "")
+        self.model.room_id = button_text.split("(")[1].replace(")", "")
         self.willCreate = False
         self._to_registration()
 
@@ -42,15 +42,15 @@ class Controller:
     def _to_registration(self):
         self.registration_frame.setup(self.model.room_name)
         self.fr.switchTo(self.registration_frame)
-        self.registration_frame.Registration.bind("<Button-1>", self.registration)
+        self.registration_frame.Registration.bind("<Button-1>", self.join_room)
 
-    def registration(self, event: tk.Event):
+    def join_room(self, event: tk.Event):
         user_name = self.registration_frame.UserName.get()
         self.model.createUser(user_name)
         if self.willCreate:
             self.model.createRoom()
 
-        self.model.registration()
+        self.model.joinRoom()
         self._to_standby()
 
     def _to_standby(self):
@@ -97,7 +97,7 @@ class Controller:
             if idea == "": 
                 idea = "アイデア未記入"
             ideas.append(idea)
-        sheet = self.model.edit_sheet(ideas)
+        sheet = self.model.editSheet(ideas)
         self.model.setSheet(sheet)
         self.writing_update()
 
@@ -126,7 +126,6 @@ class Controller:
     def send_evals(self):
         sheet = self.model.getSheet()
         evaluate = self.review_frame.evaluate
-        evals = []
         for i, var_list in enumerate(evaluate):
             for j, var in enumerate(var_list):
                 if var.get():
@@ -164,13 +163,7 @@ class Controller:
             for ideas_row in sheet["ideas"]:
                 ideas.extend(ideas_row)
         
-        n = len(ideas)
-        for i in range(n):
-            maxj = i
-            for j in range(i,n):
-                if ideas[j]["num_eval"] > ideas[i]["num_eval"]:
-                    maxj = j
-                ideas[i], ideas[maxj] = ideas[maxj], ideas[i]
+        ideas = sorted(ideas, key=lambda x: x['num_eval'], reverse=True)
 
         return ideas
 

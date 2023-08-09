@@ -9,18 +9,27 @@ class StartFrame(tk.Frame):
         self.CreateRoom = None
 
     def setup(self, roomlist: list):
+        title_frame = tk.Frame(self)
+        title_frame.pack(side="left")
+
+        room_list_frame = tk.Frame(self)
+        room_list_frame.pack(side="left")
+
+        room_list_label = tk.Label(room_list_frame, text="ルーム一覧", relief=tk.SOLID, font=("normal", 20))
+        room_list_label.pack()
+
         for room in roomlist:
             if len(room["members"]) >= 6:
                 continue
             name = room["room_name"]
             room_id = room["room_id"]
-            self.RoomList.append(tk.Button(self, text=f"{name}.{room_id}", width=20, anchor="w"))
+            self.RoomList.append(tk.Button(room_list_frame, text=f"{name}({room_id})", width=20, anchor="w", font=("normal", 20)))
             self.RoomList[-1].pack()
-
-        self.ToNameRoom = tk.Entry(self, bg="white", relief=tk.RIDGE)
+        
+        self.ToNameRoom = tk.Entry(title_frame, bg="white", relief=tk.RIDGE, width=30, font=("normal", 20))
         self.ToNameRoom.pack()
 
-        self.CreateRoom = tk.Button(self, text="ルーム作成", relief=tk.RIDGE)
+        self.CreateRoom = tk.Button(title_frame, text="ルーム作成", bg="white", relief=tk.RIDGE, width=10, font=("normal", 20))
         self.CreateRoom.pack()
 
 class RegistrationFrame(tk.Frame):

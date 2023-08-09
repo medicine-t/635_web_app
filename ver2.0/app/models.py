@@ -1,9 +1,5 @@
 import requests
 import datetime
-
-class Idea():
-    idea : str = ""
-    num_eval : int = 0
         
 class Model:
     def __init__(self) -> None:
@@ -21,7 +17,6 @@ class Model:
     
     def getRoom(self):
         response = requests.get(f"{self.url}/v1/rooms/{self.room_id}")
-        print(response)
         room = response.json()
         return room
     
@@ -32,7 +27,6 @@ class Model:
         self.room_id = response.json()["room_id"]
         return True
     
-
     def updateRoom(self) :
         response = requests.post(f"{self.url}/v1/room/update/",params={"user_id":self.user_id,"room_id":self.room_id})
         if response.status_code != 200:
@@ -53,7 +47,7 @@ class Model:
         self.user_id = response.json()["user_id"]
         return True
     
-    def registration(self):
+    def joinRoom(self):
         response = requests.post(f"{self.url}/v1/rooms/{self.room_id}/join",params={"user_id":self.user_id})
         if response.status_code != 200:
             return False
@@ -84,7 +78,7 @@ class Model:
             return False
         return True
     
-    def edit_sheet(self, idea_texts):
+    def editSheet(self, idea_texts):
         sheet = self.getSheet()
         ideas = []
         for text in idea_texts:

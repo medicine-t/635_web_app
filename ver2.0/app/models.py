@@ -1,9 +1,11 @@
 import requests
 import datetime
-        
+from dotenv import load_dotenv
+load_dotenv()
+import os
 class Model:
     def __init__(self) -> None:
-        self.url = "http://localhost" # プログラマが設定
+        self.url = os.environ.get("API_HOST","http://localhost") # プログラマが設定
         self.room_id = "" #Controllerの_to_registrationでroom_idを設定する。
         self.user_id = "" #部屋参加登録時に更新
         self.room_name = ""

@@ -37,7 +37,7 @@ class StartFrame(tk.Frame):
     
     def update(self, roomlist: list):
         for room_button in self.RoomList:
-            room_button.destroy()
+            room_button.pack_forget()
         
         for room in roomlist:
             if len(room["members"]) >= 6:

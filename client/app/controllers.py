@@ -26,6 +26,12 @@ class Controller:
         self.start_frame.CreateRoom.bind("<Button-1>", self.create_room)
         for b in self.start_frame.RoomList:
             b.bind("<Button-1>", self.select_room)
+        self.start_update()
+
+    def start_update(self):
+        room_list = self.model.getRoomList()
+        self.start_frame.update(room_list)
+        self.start_frame.after(1000, self.start_update)
 
     def select_room(self,event: tk.Event):
         button_text = event.widget["text"]

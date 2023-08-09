@@ -7,30 +7,45 @@ class StartFrame(tk.Frame):
         self.RoomList = []
         self.ToNameRoom = None
         self.CreateRoom = None
+        self.titleFrame = None
+        self.roomListFrame = None
+        self.roomListLabel = None
 
     def setup(self, roomlist: list):
-        title_frame = tk.Frame(self)
-        title_frame.pack(side="left")
+        self.titleFrame = tk.Frame(self)
+        self.titleFrame.pack(side="left")
 
-        room_list_frame = tk.Frame(self)
-        room_list_frame.pack(side="left")
+        self.roomListFrame = tk.Frame(self)
+        self.roomListFrame.pack(side="left")
 
-        room_list_label = tk.Label(room_list_frame, text="ルーム一覧", relief=tk.SOLID, font=("normal", 20))
-        room_list_label.pack()
+        self.roomListLabel = tk.Label(self.roomListFrame, text="ルーム一覧", relief=tk.SOLID, font=("normal", 20))
+        self.roomListLabel.pack()
 
         for room in roomlist:
             if len(room["members"]) >= 6:
                 continue
             name = room["room_name"]
             room_id = room["room_id"]
-            self.RoomList.append(tk.Button(room_list_frame, text=f"{name}({room_id})", width=20, anchor="w", font=("normal", 20)))
+            self.RoomList.append(tk.Button(self.roomListFrame, text=f"{name}({room_id})", width=20, anchor="w", font=("normal", 20)))
             self.RoomList[-1].pack()
         
-        self.ToNameRoom = tk.Entry(title_frame, bg="white", relief=tk.RIDGE, width=30, font=("normal", 20))
+        self.ToNameRoom = tk.Entry(self.titleFrame, bg="white", relief=tk.RIDGE, width=30, font=("normal", 20))
         self.ToNameRoom.pack()
 
-        self.CreateRoom = tk.Button(title_frame, text="ルーム作成", bg="white", relief=tk.RIDGE, width=10, font=("normal", 20))
+        self.CreateRoom = tk.Button(self.titleFrame, text="ルーム作成", bg="white", relief=tk.RIDGE, width=10, font=("normal", 20))
         self.CreateRoom.pack()
+    
+    def update(self, roomlist: list):
+        for room_button in self.RoomList:
+            room_button.destroy()
+        
+        for room in roomlist:
+            if len(room["members"]) >= 6:
+                continue
+            name = room["room_name"]
+            room_id = room["room_id"]
+            self.RoomList.append(tk.Button(self.roomListFrame, text=f"{name}({room_id})", width=20, anchor="w", font=("normal", 20)))
+            self.RoomList[-1].pack()
 
 class RegistrationFrame(tk.Frame):
     def __init__(self, window: tk.Tk):

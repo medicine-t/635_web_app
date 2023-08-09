@@ -29,8 +29,8 @@ class Controller:
 
     def select_room(self,event: tk.Event):
         button_text = event.widget["text"]
-        self.model.room_name = button_text.split(".")[0]
-        self.model.room_id = button_text.split(".")[1]
+        self.model.room_name = button_text.split("(")[0].replace(")", "")
+        self.model.room_id = button_text.split("(")[1].replace(")", "")
         self.willCreate = False
         self._to_registration()
 

@@ -17,7 +17,6 @@ class Model:
     
     def getRoom(self):
         response = requests.get(f"{self.url}/v1/rooms/{self.room_id}")
-        print(response)
         room = response.json()
         return room
     

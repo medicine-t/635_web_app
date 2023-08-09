@@ -17,7 +17,7 @@ class Controller:
         self.model = Model()
         self.willCreate = False
 
-        self.INTERVAL = 1 * 1000 #記入画面、評価画面のインターバル
+        self.INTERVAL = 10 * 1000 #記入画面、評価画面のインターバル
 
     def _to_start(self, event: tk.Event):
         room_list = self.model.getRoomList()
@@ -103,10 +103,12 @@ class Controller:
 
     def writing_update(self):
         room = self.model.getRoom()
+
         if room["host_user"] == self.model.user_id:
             self.model.updateRoom()
-        
+
         if room["phase_num"] >= 6:
+            self.model.phase_num = room["phase_num"]
             self._to_review()
         elif room["phase_num"] > self.model.phase_num:
             self.model.phase_num = room["phase_num"]
@@ -140,6 +142,7 @@ class Controller:
             self.model.updateRoom()
 
         if room["phase_num"] >= 12:
+            self.model.phase_num = room["phase_num"]
             self._to_ranking()
         elif room["phase_num"] > self.model.phase_num:
             self.model.phase_num = room["phase_num"]

@@ -10,7 +10,7 @@
   - compose.yml
   - README.txt(本ファイル)
 以下の記述ではカレントディレクトリが`<PATH TO WORK DIR>/` であることを前提としています。
-　また、動作はconda環境で確認しています。
+　また、動作はconda環境(python 3.11.4) で確認しています。
 
 ## サーバーの立ち上げ
 APIを提供するHTTPサーバー(以降APIサーバー)はdocker composeでの実行を想定しています。

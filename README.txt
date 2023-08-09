@@ -3,13 +3,12 @@
 それぞれの実行の方法について以下で記述します。
 
 ## フォルダ構成
-- 02/
+- /
   - api_server/
   - client/
   - .gitignore
   - compose.yml
-  - README.md(本ファイル)
-  - README.txt
+  - README.txt(本ファイル)
 以下の記述ではカレントディレクトリが`<PATH TO WORK DIR>/` であることを前提としています。
 　また、動作はconda環境で確認しています。
 

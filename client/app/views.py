@@ -10,8 +10,10 @@ class StartFrame(tk.Frame):
         self.titleFrame = None
         self.roomListFrame = None
         self.roomListLabel = None
+        self.roomList = None
 
     def setup(self, roomlist: list):
+        self.roomList = roomlist
         self.titleFrame = tk.Frame(self)
         self.titleFrame.pack(side="left")
 
@@ -36,6 +38,8 @@ class StartFrame(tk.Frame):
         self.CreateRoom.pack()
     
     def update(self, roomlist: list):
+        self.roomList = roomlist
+        
         for room_button in self.RoomList:
             room_button.pack_forget()
         

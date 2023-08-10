@@ -30,9 +30,10 @@ class Controller:
 
     def start_update(self):
         room_list = self.model.getRoomList()
-        self.start_frame.update(room_list)
-        for b in self.start_frame.RoomList:
-            b.bind("<Button-1>", self.select_room)
+        if self.start_frame.roomList != room_list:
+            self.start_frame.update(room_list)
+            for b in self.start_frame.RoomList:
+                b.bind("<Button-1>", self.select_room)
         self.start_frame.after(1000, self.start_update)
 
     def select_room(self,event: tk.Event):
